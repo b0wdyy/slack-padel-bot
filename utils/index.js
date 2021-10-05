@@ -1,3 +1,5 @@
+const puppeteer = require('puppeteer');
+
 function getDateFromDay(day) {
   switch (day) {
     case 'maandag':
@@ -16,8 +18,31 @@ function getDateFromDay(day) {
       return 'Sunday';
 
     default:
-      break;
+      return 'No valid date given';
   }
 }
 
-module.exports = getDateFromDay;
+function getLink({ date }) {
+  return `https://www.tennisvlaanderen.be/dagplanning?clubId=2388&planningDay=${date}&terrainGroupId=9245`;
+}
+async function initCrawler({ link }) {
+  const LINK = link;
+
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.goto(LINK);
+  try {
+    const fields = await page.$$eval(
+      '.reservation-table .Padel.available',
+      (data) => data.map(
+        (d) => d.getAttribute('data-url'),
+      ),
+    );
+
+    return fields.filter((d) => d.includes('startHour=17:00'));
+  } catch (e) {
+    return [];
+  }
+}
+
+module.exports = { getLink, getDateFromDay, initCrawler };

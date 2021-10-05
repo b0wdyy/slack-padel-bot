@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const axios = require('axios');
 const moment = require('moment');
-const getDateFromDay = require('../utils/index');
+const { initCrawler, getDateFromDay, getLink } = require('../utils');
 
 const router = Router();
 const days = [
@@ -24,13 +24,19 @@ router.post('/padel', async (req, res) => {
   const day = getDateFromDay(text);
   const date = moment().day(day).format('DD-MM-YYYY');
 
-  console.log(date);
-
   await axios.post(response_url, {
-    text: `ja man broer, <@${user_id}>`,
+    text: 'Even kijken hoeveel velden er nog vrij zijn...',
   });
-  res.send('Even kijken hoeveel velden er beschikbaar zijn....');
-  return res.send('Normaal heb ik gereageerd');
+
+  const link = getLink({ date });
+  const fields = await initCrawler({ link });
+  const actualFields = fields.length / 3;
+
+  if (actualFields > 0) {
+    return res.send(`Er zijn nog ${actualFields} beschikbaar <@${user_id}>!! Boek nu: ${link} 🎾🎾`);
+  }
+
+  return res.send(`Slecht nieuws makker, geen velden meer vrij op ${text}... 😭😭`);
 });
 
 module.exports = router;
