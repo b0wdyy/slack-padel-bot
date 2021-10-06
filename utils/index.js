@@ -29,7 +29,7 @@ function getLink({ date }) {
 async function initCrawler({ link }) {
   const LINK = link;
 
-  const browser = await puppeteer.launch({ args: "--no-sandbox" });
+  const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
   const page = await browser.newPage();
   await page.goto(LINK);
   try {
