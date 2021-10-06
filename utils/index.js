@@ -22,6 +22,10 @@ function getDateFromDay(day) {
   }
 }
 
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function getLink({ date }) {
   return `https://www.tennisvlaanderen.be/dagplanning?clubId=2388&planningDay=${date}&terrainGroupId=9245`;
 }
@@ -44,4 +48,9 @@ async function initCrawler({ link }) {
   }
 }
 
-module.exports = { getLink, getDateFromDay, initCrawler };
+module.exports = {
+  getLink,
+  getDateFromDay,
+  initCrawler,
+  delay,
+};

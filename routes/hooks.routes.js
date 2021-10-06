@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const axios = require("axios");
 const moment = require("moment");
-const { initCrawler, getDateFromDay, getLink } = require("../utils");
+const { initCrawler, getDateFromDay, getLink, delay } = require("../utils");
 
 const router = Router();
 const days = [
@@ -26,6 +26,10 @@ router.post("/padel", async (req, res) => {
 
   await axios.post(response_url, {
     text: "Even kijken hoeveel velden er nog vrij zijn...",
+  });
+  await delay(1000);
+  await axios.post(response_url, {
+    text: "Nog bezig...",
   });
 
   const link = getLink({ date });
