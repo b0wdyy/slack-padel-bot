@@ -24,29 +24,21 @@ router.post("/padel", async (req, res) => {
   const day = getDateFromDay(text);
   const date = moment().day(day).format("DD-MM-YYYY");
 
-  await axios.post(response_url, {
-    text: "Even kijken hoeveel velden er nog vrij zijn...",
-  });
-  await delay(1000);
-  await axios.post(response_url, {
-    text: "Nog bezig...",
-  });
+  res.send("Even kijken of er nog velden vrij zijn...");
 
   const link = getLink({ date });
   const fields = await initCrawler({ link });
   const actualFields = fields.length / 3;
 
   if (actualFields > 0) {
-    return res
-      .status(200)
-      .send(
-        `Er zijn nog ${actualFields} beschikbaar <@${user_id}>!! Boek nu: ${link} 🎾🎾`
-      );
+    return axios.post(response_url, {
+      text: `Er zijn nog ${actualFields} beschikbaar <@${user_id}>!! Boek nu: ${link} 🎾🎾`,
+    });
   }
 
-  return res
-    .status(200)
-    .send(`Slecht nieuws makker, geen velden meer vrij op ${text}... 😭😭`);
+  return axios.post(response_url, {
+    text: `Slecht nieuws makker, geen velden meer vrij op ${text}... 😭😭`,
+  });
 });
 
 module.exports = router;
